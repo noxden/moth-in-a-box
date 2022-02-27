@@ -15,7 +15,7 @@ public class SensorLight : LightSource
     public SensorName lightSensor = SensorName.North;
 
     private GameManager gameManager;
-    private PlayerCharacter player;
+    //private PlayerCharacter player;   // is inherited now
 
     [SerializeField]
     private int currentValue;

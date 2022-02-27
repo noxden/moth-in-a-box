@@ -11,12 +11,27 @@ using UnityEngine;
 
 public class PlayerCharacter : EntityClass
 {
-    public DirectionIndicator directionIndicator { private set; get; }
+    [Tooltip("The GameObject that will indicate which direction this GameObject will move in.")]
+    public DirectionIndicator indicator;
+
+    [SerializeField]
+    private const float MOVE_INTERVAL = 1;
+
     private Vector3 pos;
 
     private void Start()
     {
         pos = this.transform.position;
+
+        if (indicator == null)
+        {
+            Debug.LogError("DirectionIndicator is not assigned in the Editor, can't set it's anchor.", this);
+        }
+        else
+        {
+            indicator.SetAnchor(this);
+        }
+        StartCoroutine(MoveEvery(MOVE_INTERVAL));
     }
 
     /*
@@ -79,22 +94,32 @@ public class PlayerCharacter : EntityClass
         }
     }
     */
-    private void Update()
+
+    private IEnumerator MoveEvery(float seconds)
     {
+        yield return new WaitForSeconds(seconds);
+        MoveTowardsIndicator();
+
+        StartCoroutine(MoveEvery(seconds));
+    }
+
+    private void MoveTowardsIndicator()
+    {
+        if (this.indicator == null)    // Guard clause
+        {
+            Debug.LogError("DirectionIndicator is still null.", this);
+            return;
+        }
+
+        Vector3 dirPos = this.indicator.transform.position;
+
+        pos.x = Mathf.Round(dirPos.x);
+        pos.z = Mathf.Round(dirPos.z);
+        
+        //> Apply all changes on pos to the actual transform of this GameObject
         this.transform.position = pos;
-    }
+        //this.transform.position = Vector3.MoveTowards(transform.position, new Vector3(Mathf.Round(dirPos.x), transform.position.y, Mathf.Round(dirPos.z)), float.MaxValue);
 
-    public Vector3 MoveTowards(Vector3 newPos)
-    {
-        Vector3 moveDir = newPos - this.transform.position;
-        //Debug.Log($"moveDir is {moveDir}.");
-        //pos = Vector3.Lerp(pos, newPos, 1f);
-        pos = newPos;
-        return pos;
-    }
-
-    public void SetDirectionIndicator(DirectionIndicator _directionIndicator)
-    {
-        directionIndicator = _directionIndicator;
+        indicator.ResetToAnchor();
     }
 }

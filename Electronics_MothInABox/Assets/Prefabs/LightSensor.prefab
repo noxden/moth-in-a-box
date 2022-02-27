@@ -59,6 +59,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   strength: 5
+  attractionForce: 0
   lightSensor: 0
   currentValue: 0
   highestValue: 0

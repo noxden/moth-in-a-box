@@ -407,8 +407,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 347010005}
-  - component: {fileID: 347010004}
   - component: {fileID: 347010006}
+  - component: {fileID: 347010004}
   m_Layer: 0
   m_Name: DirectionIndicator
   m_TagString: Untagged
@@ -428,7 +428,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02d7225d95b87fa4c93e5a7794be7252, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1966313968}
 --- !u!4 &347010005
 Transform:
   m_ObjectHideFlags: 0
@@ -1988,6 +1987,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c83b294e627ff8544980737d2bd55450, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  directionIndicator: {fileID: 347010004}
 --- !u!1001 &2131191110
 PrefabInstance:
   m_ObjectHideFlags: 0

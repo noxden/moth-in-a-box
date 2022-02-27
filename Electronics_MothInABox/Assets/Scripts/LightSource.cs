@@ -15,10 +15,11 @@ public class LightSource : MonoBehaviour
     [Range(0f, 100f)]
     public float strength = 5;
 
-    [SerializeField]
-    protected float attractionForce = 0;
+    [SerializeField] protected float attractionForce = 0;
 
     protected SphereCollider lightCollider;
+
+    protected PlayerCharacter player;
 
     //public static bool debugLightArea;
 
@@ -54,22 +55,24 @@ public class LightSource : MonoBehaviour
 
     protected void OnTriggerEnter(Collider other)
     {
+        if (player == null)
+            player = other.GetComponent<PlayerCharacter>();     //< Does not have to be cleared after player leaves the trigger, because there is only one player anyways.
         //Debug.Log($"\"{other.gameObject.name}\" entered collider of {this.name}.", this); 
     }
 
     protected void OnTriggerStay(Collider other)
     {
         Vector3 dirToPlayer = this.transform.position - other.transform.position;   //< This is the directional vector from box to lightsource
-                dirToPlayer = new Vector3(dirToPlayer.x, 0f, dirToPlayer.z);        //< Removes the y-axis from the equation, literally
+                dirToPlayer = new Vector3(dirToPlayer.x, 0f, dirToPlayer.z);        //< Removes the y-axis from the equation, literally -> Attracts only on the xz-plane
         float  distToPlayer = Vector3.Distance(Vector3.zero, dirToPlayer);          //< Calculates the distance solely based on dirToPlayer
         //Debug.Log($"dist from {other.gameObject.name} to {this.name}: {distToPlayer}.", this);
 
         CalculateAttractionForce(distToPlayer);
 
-        if (attractionForce == 0 || dirToPlayer == Vector3.zero)   //< Guard clause. There is no need to run the MoveTo function, if the vector will be (0,0,0) anyways.
+        if (attractionForce == 0 || dirToPlayer == Vector3.zero)   //< Guard clause. There is no need to run the MoveTo function if the vector will be (0,0,0) anyways.
             return;
 
-        DirectionIndicator directionIndicator = other.gameObject.GetComponent<PlayerCharacter>().directionIndicator;    //< This is very not nice.
+        DirectionIndicator directionIndicator = player.indicator;    //< This is very not nice.
         directionIndicator.MoveTo(dirToPlayer, attractionForce);
     }
 

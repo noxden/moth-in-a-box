@@ -42,16 +42,17 @@ public class ReadAnalogData : MonoBehaviour
             if (attemptCount >= 20)
             {
                 Debug.LogError("<color=#FF7F7F> Could not establish connection to board after 20 attempts. Please restart the application. </color>", this);
-                Application.Quit();
+                //Application.Quit();
             }
             else
             {
                 Debug.LogWarning("<color=#FF7F7F> Could not establish connection to board. Trying again... </color>", this);
-                //UduinoManager.Instance.DiscoverPorts();   //< Leads to faster discover times, but way longer waiting times when closing the game preview
-                yield return new WaitForSeconds(2f);
-                myDevice = UduinoManager.Instance.GetBoard("DanielsUno");
-                attemptCount += 1;
             }
+            //UduinoManager.Instance.DiscoverPorts();   //< Leads to faster discover times, but way longer waiting times when closing the game preview
+            yield return new WaitForSeconds(2f);
+            myDevice = UduinoManager.Instance.GetBoard("DanielsUno");
+            attemptCount += 1;
+            
         }
         Debug.LogWarning("<color=#90EE90> Established connection to board. </color>", this);
         StartCoroutine(ReadLightSensors());
@@ -60,13 +61,11 @@ public class ReadAnalogData : MonoBehaviour
     //> This IEnumerator replaces this classes Update() function and only runs every 100 milliseconds.
     IEnumerator ReadLightSensors()
     {
-        while (Application.isPlaying)   //< Coroutine will not end while the game is running
-        {
-            yield return new WaitForSeconds(0.1f);
-            UduinoManager.Instance.Read(myDevice, "lightSensor");
-        }
+        UduinoManager.Instance.Read(myDevice, "lightSensor");
+        yield return new WaitForSeconds(0.1f);
 
-        //StartCoroutine(ReadLightSensors());     //< Coroutine restarts itself.
+        StartCoroutine(ReadLightSensors());     //< Coroutine restarts itself.
+                                                //  I could've used a while(true) loop instead, but this way here allows me to stop the Coroutine at any point.
     }
 
     public void OnDataReceived(string _data, UduinoDevice device)

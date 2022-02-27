@@ -12,32 +12,18 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class DirectionIndicator : MonoBehaviour
 {
-
-    [Tooltip("The GameObject that will be moved by this, usually the player character.")]
-    public PlayerCharacter player;
+    public PlayerCharacter anchor { set; get; }
 
     private const float MaxDistFromAnchor = 1;
 
     private Vector3 pos;
 
-    private void Start()
+    private void oUpdate()
     {
-        player.SetDirectionIndicator(this);
-        pos = player.transform.position;
-    }
+        if (anchor == null)
+            return;
 
-   
-    private void Update()
-    {
-        //MoveByInput();
-
-        //> Locks this object to a perimeter around the anchor object
-        pos.x = Mathf.Clamp(pos.x, player.transform.position.x - MaxDistFromAnchor, player.transform.position.x + MaxDistFromAnchor);
-        pos.y = Mathf.Clamp(pos.y, player.transform.position.y - MaxDistFromAnchor, player.transform.position.y + MaxDistFromAnchor);
-        pos.z = Mathf.Clamp(pos.z, player.transform.position.z - MaxDistFromAnchor, player.transform.position.z + MaxDistFromAnchor);
-
-        //> Applies all changes to pos to the actual transform of this GameObject
-        this.transform.position = pos;
+        ClampToAnchor();
     }
 
     void MoveByInput()
@@ -72,26 +58,46 @@ public class DirectionIndicator : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            PullPlayerToIndicator();
+            //PullPlayerToIndicator();
         }
     }
 
+    //> This function is called by LightSources to modify the position of this DirectionIndicator
     public void MoveTo(Vector3 _direction, float _attractionForce)
     {
         Rigidbody rigidbody = GetComponent<Rigidbody>();
         //Debug.Log($"{name} will be moved to {_direction * _attractionForce}", this);  //< This log message severely rounds the result to a point where it's not representable anymore.
-        Debug.Log($"X: {_direction.x * _attractionForce * Time.deltaTime}", this);
-        //rigidbody.AddForce(_direction * _attractionForce * Time.deltaTime, ForceMode.VelocityChange);
-        
-        this.transform.position += _direction * _attractionForce * Time.deltaTime;
+        //Debug.Log($"X: {_direction.x * _attractionForce * Time.deltaTime}", this);
 
-        // Write new position to pos
+        //rigidbody.AddForce(_direction * _attractionForce * Time.deltaTime, ForceMode.VelocityChange);
+        this.transform.position += _direction * _attractionForce * Time.deltaTime * 0.1f;
+
+        //> Write new position to pos
         pos = this.transform.position;
     }
 
-    public void PullPlayerToIndicator()
+    public void SetAnchor(PlayerCharacter _anchor)
     {
-        pos = player.MoveTowards(pos);    //< Is called too early
-        //< Gives own pos to player, which then returns their new (modified) version of the input pos and that one is applied to this classes pos again
+        this.anchor = _anchor;
+        Debug.Log($"\"{name}\" is now anchored to \"{anchor.name}\".", this);
+
+        ResetToAnchor();
+    }
+
+    public void ResetToAnchor()
+    {
+        pos = anchor.transform.position;
+        this.transform.position = pos;
+    }
+
+    private void ClampToAnchor()
+    {
+        //> Locks this object to a perimeter around the anchor object
+        pos.x = Mathf.Clamp(pos.x, anchor.transform.position.x - MaxDistFromAnchor, anchor.transform.position.x + MaxDistFromAnchor);
+        pos.y = Mathf.Clamp(pos.y, anchor.transform.position.y - MaxDistFromAnchor, anchor.transform.position.y + MaxDistFromAnchor);
+        pos.z = Mathf.Clamp(pos.z, anchor.transform.position.z - MaxDistFromAnchor, anchor.transform.position.z + MaxDistFromAnchor);
+
+        //> Apply all changes on pos to the actual transform of this GameObject
+        this.transform.position = pos;
     }
 }
