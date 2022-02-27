@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6433773095129447998}
   - component: {fileID: 2756495188101092090}
   m_Layer: 0
-  m_Name: LightSensor
+  m_Name: SensorLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ae9602856a260648a2ae62854bdecce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  strength: 5
+  strength: 7
   attractionForce: 0
   lightSensor: 0
   currentValue: 0

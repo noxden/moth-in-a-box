@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------------------------
 // University:   Darmstadt University of Applied Sciences, Expanded Realities
 // Course:       Introduction to Electronics and Physical Interfaces by Prof. Dr. Frank Gabler
-// Script by:    Daniel Heilmann (771144), Jan Alexander (AR Art- & App-Development)
+// Script by:    Jan Alexander (AR Art- & App-Development), Daniel Heilmann (771144)
 // Last changed: 26-02-22
 //----------------------------------------------------------------------------------------------
 

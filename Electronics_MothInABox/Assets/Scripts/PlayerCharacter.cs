@@ -13,12 +13,11 @@ public class PlayerCharacter : EntityClass
 {
     [Tooltip("The GameObject that will indicate which direction this GameObject will move in.")]
     public DirectionIndicator indicator;
+    public Vector3 pos;
+
     private Vector3 indicatorPos;   //< To make this Vector accessible for the Update function
 
-    [SerializeField]
     private const float MOVE_INTERVAL = 1;
-
-    public Vector3 pos;
 
     private void Start()
     {
@@ -35,6 +34,7 @@ public class PlayerCharacter : EntityClass
         StartCoroutine(MoveEvery(MOVE_INTERVAL));
     }
 
+    #region Archived
     /*
     const float MOVE_INTERVAL = 0.5f;
 
@@ -95,6 +95,7 @@ public class PlayerCharacter : EntityClass
         }
     }
     */
+    #endregion
 
     private void Update()
     {

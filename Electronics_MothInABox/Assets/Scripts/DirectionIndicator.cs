@@ -26,42 +26,6 @@ public class DirectionIndicator : MonoBehaviour
         ClampToAnchor(anchor.pos);
     }
 
-    void MoveByInput()
-    {
-        //> Quick workaround
-
-        //Debug.Log($"MouseButtonDown(0) is {Input.GetMouseButtonDown(0)}");
-
-        float movementSpeed = Time.deltaTime;
-        Vector3 movement = Vector3.zero;
-
-        if (Input.GetAxis("Horizontal") > 0)
-        {
-            movement.x = 1;
-        }
-        else if (Input.GetAxis("Horizontal") < 0)
-        {
-            movement.x = -1;
-        }
-
-        if (Input.GetAxis("Vertical") > 0)
-        {
-            movement.z = 1;
-        }
-        else if (Input.GetAxis("Vertical") < 0)
-        {
-            movement.z = -1;
-        }
-        movement *= movementSpeed;
-
-        pos += movement;
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            //PullPlayerToIndicator();
-        }
-    }
-
     //> This function is called by LightSources to modify the position of this DirectionIndicator
     public void MoveTo(Vector3 lightPosition, float _attractionForce)
     {
@@ -77,6 +41,7 @@ public class DirectionIndicator : MonoBehaviour
         pos = this.transform.position;
     }
 
+    //> This function is called by the PlayerCharacter on start
     public void SetAnchor(PlayerCharacter _anchor)
     {
         this.anchor = _anchor;

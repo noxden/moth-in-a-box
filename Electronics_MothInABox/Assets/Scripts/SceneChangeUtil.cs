@@ -15,7 +15,6 @@ public class SceneChangeUtil : MonoBehaviour
 {
     public Scene sceneToLoad;
 
-    // Private Helpers
     public void ChangeScene()
     {
         SceneTransitionManager.LoadScene(sceneToLoad);

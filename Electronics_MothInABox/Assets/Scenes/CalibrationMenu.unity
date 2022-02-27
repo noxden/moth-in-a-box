@@ -1053,7 +1053,7 @@ GameObject:
   - component: {fileID: 864009602}
   - component: {fileID: 864009601}
   m_Layer: 5
-  m_Name: MouseText
+  m_Name: Text Calibration Complete
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1111,8 +1111,8 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Calibration completed. Click here to contine or click above to repeat the
-    calibration process.
+  m_Text: Looks like you're all set. Click here to contine or click above to repeat
+    the calibration process.
 --- !u!222 &864009602
 CanvasRenderer:
   m_ObjectHideFlags: 0
