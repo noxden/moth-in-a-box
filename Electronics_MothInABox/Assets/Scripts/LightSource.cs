@@ -2,7 +2,7 @@
 // University:   Darmstadt University of Applied Sciences, Expanded Realities
 // Course:       Introduction to Electronics and Physical Interfaces by Prof. Dr. Frank Gabler
 // Script by:    Daniel Heilmann (771144)
-// Last changed: 26-02-22
+// Last changed: 27-02-22
 //----------------------------------------------------------------------------------------------
 
 using System.Collections;
@@ -62,18 +62,17 @@ public class LightSource : MonoBehaviour
 
     protected void OnTriggerStay(Collider other)
     {
+        //> The following calculations are required for the attractionForce-calculation
         Vector3 dirToPlayer = this.transform.position - other.transform.position;   //< This is the directional vector from box to lightsource
                 dirToPlayer = new Vector3(dirToPlayer.x, 0f, dirToPlayer.z);        //< Removes the y-axis from the equation, literally -> Attracts only on the xz-plane
         float  distToPlayer = Vector3.Distance(Vector3.zero, dirToPlayer);          //< Calculates the distance solely based on dirToPlayer
         //Debug.Log($"dist from {other.gameObject.name} to {this.name}: {distToPlayer}.", this);
-
         CalculateAttractionForce(distToPlayer);
 
         if (attractionForce == 0 || dirToPlayer == Vector3.zero)   //< Guard clause. There is no need to run the MoveTo function if the vector will be (0,0,0) anyways.
             return;
-
         DirectionIndicator directionIndicator = player.indicator;    //< This is very not nice.
-        directionIndicator.MoveTo(dirToPlayer, attractionForce);
+        directionIndicator.MoveTo(transform.position, attractionForce);  //< Passes its own position and the calculated attractionForce to the directionIndicator
     }
 
     protected void OnTriggerExit(Collider other)

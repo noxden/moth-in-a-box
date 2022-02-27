@@ -2,7 +2,7 @@
 // University:   Darmstadt University of Applied Sciences, Expanded Realities
 // Course:       Introduction to Electronics and Physical Interfaces by Prof. Dr. Frank Gabler
 // Script by:    Daniel Heilmann (771144)
-// Last changed: 26-02-22
+// Last changed: 27-02-22
 //----------------------------------------------------------------------------------------------
 
 using System.Collections;
@@ -13,11 +13,12 @@ public class PlayerCharacter : EntityClass
 {
     [Tooltip("The GameObject that will indicate which direction this GameObject will move in.")]
     public DirectionIndicator indicator;
+    private Vector3 indicatorPos;   //< To make this Vector accessible for the Update function
 
     [SerializeField]
     private const float MOVE_INTERVAL = 1;
 
-    private Vector3 pos;
+    public Vector3 pos;
 
     private void Start()
     {
@@ -95,6 +96,11 @@ public class PlayerCharacter : EntityClass
     }
     */
 
+    private void Update()
+    {
+        this.transform.position = Vector3.MoveTowards(transform.position, new Vector3(Mathf.Round(pos.x), pos.y, Mathf.Round(pos.z)), Time.deltaTime * 3);
+    }
+
     private IEnumerator MoveEvery(float seconds)
     {
         yield return new WaitForSeconds(seconds);
@@ -111,14 +117,31 @@ public class PlayerCharacter : EntityClass
             return;
         }
 
-        Vector3 dirPos = this.indicator.transform.position;
+        indicatorPos = this.indicator.transform.position;
 
-        pos.x = Mathf.Round(dirPos.x);
-        pos.z = Mathf.Round(dirPos.z);
-        
-        //> Apply all changes on pos to the actual transform of this GameObject
-        this.transform.position = pos;
-        //this.transform.position = Vector3.MoveTowards(transform.position, new Vector3(Mathf.Round(dirPos.x), transform.position.y, Mathf.Round(dirPos.z)), float.MaxValue);
+        Vector3 indicatorDir = indicatorPos - this.pos;  //< Required to calculate the magnitude of the distance between the box and the directionIndicator
+        Vector3 indicatorDirMagnitude = new Vector3(Mathf.Abs(indicatorDir.x), 0, Mathf.Abs(indicatorDir.z));   //< dirPos y is 0 anyways
+
+        #region Archived
+        //pos.x = Mathf.Round(dirPos.x);
+        //pos.z = Mathf.Round(dirPos.z);
+        #endregion
+
+        //> The following switch statement restricts movement to only one axis per iteration
+        switch (indicatorDirMagnitude.x > indicatorDirMagnitude.z)
+        {
+            case true:
+                pos.x = Mathf.Round(indicatorPos.x);  //< Is called when magn.x is bigger that magn.z -> Player moves on x-axis
+                //Debug.Log($"Moving on x", this);
+                break;
+            case false:
+                pos.z = Mathf.Round(indicatorPos.z);  //< Is called when magn.z is bigger or equal magn.x -> Player moves in z-axis. This causes a bias in favour of movement on z-axis
+                //Debug.Log($"Moving on z", this);
+                break;
+        }
+
+        //> Apply all changes on pos to the actual transform of this GameObject 
+        //this.transform.position = pos;    // THIS IS DEPRECATED: Replaced by the "Vector.MoveTowards" in Update
 
         indicator.ResetToAnchor();
     }

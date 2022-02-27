@@ -2,7 +2,7 @@
 // University:   Darmstadt University of Applied Sciences, Expanded Realities
 // Course:       Introduction to Electronics and Physical Interfaces by Prof. Dr. Frank Gabler
 // Script by:    Daniel Heilmann (771144)
-// Last changed: 26-02-22
+// Last changed: 27-02-22
 //----------------------------------------------------------------------------------------------
 
 using System.Collections;
@@ -18,12 +18,12 @@ public class DirectionIndicator : MonoBehaviour
 
     private Vector3 pos;
 
-    private void oUpdate()
+    private void Update()
     {
         if (anchor == null)
             return;
 
-        ClampToAnchor();
+        ClampToAnchor(anchor.pos);
     }
 
     void MoveByInput()
@@ -63,14 +63,15 @@ public class DirectionIndicator : MonoBehaviour
     }
 
     //> This function is called by LightSources to modify the position of this DirectionIndicator
-    public void MoveTo(Vector3 _direction, float _attractionForce)
+    public void MoveTo(Vector3 lightPosition, float _attractionForce)
     {
-        Rigidbody rigidbody = GetComponent<Rigidbody>();
+        //Rigidbody rigidbody = GetComponent<Rigidbody>();
         //Debug.Log($"{name} will be moved to {_direction * _attractionForce}", this);  //< This log message severely rounds the result to a point where it's not representable anymore.
         //Debug.Log($"X: {_direction.x * _attractionForce * Time.deltaTime}", this);
 
         //rigidbody.AddForce(_direction * _attractionForce * Time.deltaTime, ForceMode.VelocityChange);
-        this.transform.position += _direction * _attractionForce * Time.deltaTime * 0.1f;
+        Vector3 relativeLightPosition = lightPosition - pos;
+        this.transform.position += relativeLightPosition * _attractionForce * Time.deltaTime;
 
         //> Write new position to pos
         pos = this.transform.position;
@@ -86,16 +87,17 @@ public class DirectionIndicator : MonoBehaviour
 
     public void ResetToAnchor()
     {
-        pos = anchor.transform.position;
+        pos = anchor.pos;
         this.transform.position = pos;
+        Debug.Log($"\"{name}\" is reset to {anchor.pos}.", this);
     }
 
-    private void ClampToAnchor()
+    private void ClampToAnchor(Vector3 anchorPos)
     {
         //> Locks this object to a perimeter around the anchor object
-        pos.x = Mathf.Clamp(pos.x, anchor.transform.position.x - MaxDistFromAnchor, anchor.transform.position.x + MaxDistFromAnchor);
-        pos.y = Mathf.Clamp(pos.y, anchor.transform.position.y - MaxDistFromAnchor, anchor.transform.position.y + MaxDistFromAnchor);
-        pos.z = Mathf.Clamp(pos.z, anchor.transform.position.z - MaxDistFromAnchor, anchor.transform.position.z + MaxDistFromAnchor);
+        pos.x = Mathf.Clamp(pos.x, anchorPos.x - MaxDistFromAnchor, anchorPos.x + MaxDistFromAnchor);
+        pos.y = Mathf.Clamp(pos.y, anchorPos.y - MaxDistFromAnchor, anchorPos.y + MaxDistFromAnchor);
+        pos.z = Mathf.Clamp(pos.z, anchorPos.z - MaxDistFromAnchor, anchorPos.z + MaxDistFromAnchor);
 
         //> Apply all changes on pos to the actual transform of this GameObject
         this.transform.position = pos;
