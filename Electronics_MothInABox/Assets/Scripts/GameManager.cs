@@ -2,7 +2,7 @@
 // University:   Darmstadt University of Applied Sciences, Expanded Realities
 // Course:       Introduction to Electronics and Physical Interfaces by Prof. Dr. Frank Gabler
 // Script by:    Daniel Heilmann (771144)
-// Last changed: 25-02-22
+// Last changed: 27-02-22
 //----------------------------------------------------------------------------------------------
 
 using System.Collections;
@@ -20,23 +20,10 @@ public sealed class GameManager : MonoBehaviour
 
     public bool isBoardConnected = false;
 
-    [SerializeField]
-    private int SensorNorth;
-    [SerializeField]
-    private int SensorEast;
-    [SerializeField]
-    private int SensorSouth;
-    [SerializeField]
-    private int SensorWest;
-    #region Archived
-    /*
-    //> These sensor values can only be set using the "SetSensorValues" function
-    public float SensorNorth { private set; get; }
-    public float SensorEast { private set; get; }
-    public float SensorSouth { private set; get; }
-    public float SensorWest { private set; get; }
-    */
-    #endregion
+    public Sensor North;
+    public Sensor East;
+    public Sensor South;
+    public Sensor West;
 
     private void Awake()    //Awake() is run even before Start()
     {
@@ -55,35 +42,59 @@ public sealed class GameManager : MonoBehaviour
     {
         Application.targetFrameRate = 60;
 
+        North = new Sensor(SensorName.North);
+        East = new Sensor(SensorName.East);
+        South = new Sensor(SensorName.South);
+        West = new Sensor(SensorName.West);
+
+        if (North != null && East != null && South != null && West != null)
+            Debug.Log($"Initialized all Sensors.", this);
         //Cursor.lockState = CursorLockMode.Locked;       //< Locks the mouse to the viewport
     }
 
     public void SetSensorValues(int valueNorth, int valueEast, int valueSouth, int valueWest)
     {
-        SensorNorth = valueNorth;
-        SensorEast = valueEast;
-        SensorWest = valueWest;
-        SensorSouth = valueSouth;
+        North.SetCurrentValue(valueNorth);
+        East.SetCurrentValue(valueEast);
+        South.SetCurrentValue(valueSouth);
+        West.SetCurrentValue(valueWest);
 
         if (!isBoardConnected)          //< If isBoardConnected is still false, set it true.
             isBoardConnected = true;
-        //Debug.Log($"{SensorNorth}, {SensorEast}, {SensorWest}, {SensorSouth}");
+        //Debug.Log($"{valueNorth}, {valueEast}, {valueWest}, {valueSouth}");
     }
 
-    public int GetSensorValue(SensorName lightSensor)
+    public float GetSensorValue(SensorName sensorName)
     {
-        switch (lightSensor)
+        switch (sensorName)
         {
             case SensorName.North:
-                return SensorNorth;
+                return North.PercentLight();
             case SensorName.East:
-                return SensorEast;
+                return East.PercentLight();
             case SensorName.South:
-                return SensorSouth;
+                return South.PercentLight();
             case SensorName.West:
-                return SensorWest;
+                return West.PercentLight();
             default:
-                return 0;
+                return 0f;
         }
+    }
+
+    public void CalibrateSensors()
+    {
+        North.Calibrate();
+        East.Calibrate();
+        South.Calibrate();
+        West.Calibrate();
+    }
+
+    public void ResetSensorCalibration(Sensor.CalibrationType type)
+    {
+        North.ResetCalibration(type);
+        East.ResetCalibration(type);
+        South.ResetCalibration(type);
+        West.ResetCalibration(type);
+        Debug.Log($"Reset calibration \"{type}\" for all sensors.", this);
     }
 }

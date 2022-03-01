@@ -2,32 +2,27 @@
 // University:   Darmstadt University of Applied Sciences, Expanded Realities
 // Course:       Introduction to Electronics and Physical Interfaces by Prof. Dr. Frank Gabler
 // Script by:    Daniel Heilmann (771144)
-// Last changed: 14-02-22
+// Last changed: 26-02-22
 //----------------------------------------------------------------------------------------------
 
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class EntityClass : MonoBehaviour
+[RequireComponent(typeof(CanvasGroup))]
+public class BlinkElement : MonoBehaviour
 {
-    /*
-    [SerializeField]
-    [Range(0, 10)]
-    protected int moveStepSize;
+    public float blinkFrequency = 3f;
+    public float maximumAlpha = 1f;
 
-    delegate void MoveSchedule1();
-    MoveSchedule1 moveSchedule1;
+    private CanvasGroup canvasGroup;
 
-    private void OnEnable()
+    private void Start()
     {
-        moveSchedule1 += move;
-        // subscribe to delegate in moveschedule
+        canvasGroup = GetComponent<CanvasGroup>();
     }
-
-    private void move()
+    private void Update()
     {
-        
+        canvasGroup.alpha = Mathf.Sin(1 + Time.realtimeSinceStartup * blinkFrequency) * maximumAlpha;
     }
-    */
 }

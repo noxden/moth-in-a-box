@@ -48,7 +48,7 @@ public class ReadAnalogData : MonoBehaviour
             {
                 Debug.LogWarning("<color=#FF7F7F> Could not establish connection to board. Trying again... </color>", this);
             }
-            //UduinoManager.Instance.DiscoverPorts();   //< Leads to faster discover times, but way longer waiting times when closing the game preview
+            UduinoManager.Instance.DiscoverPorts();   //< Leads to faster discover times, but way longer waiting times when closing the game preview
             yield return new WaitForSeconds(2f);
             myDevice = UduinoManager.Instance.GetBoard("DanielsUno");
             attemptCount += 1;

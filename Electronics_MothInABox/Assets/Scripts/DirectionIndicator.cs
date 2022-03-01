@@ -2,7 +2,7 @@
 // University:   Darmstadt University of Applied Sciences, Expanded Realities
 // Course:       Introduction to Electronics and Physical Interfaces by Prof. Dr. Frank Gabler
 // Script by:    Daniel Heilmann (771144)
-// Last changed: 27-02-22
+// Last changed: 01-03-22
 //----------------------------------------------------------------------------------------------
 
 using System.Collections;
@@ -35,10 +35,11 @@ public class DirectionIndicator : MonoBehaviour
 
         //rigidbody.AddForce(_direction * _attractionForce * Time.deltaTime, ForceMode.VelocityChange);
         Vector3 relativeLightPosition = lightPosition - pos;
-        this.transform.position += relativeLightPosition * _attractionForce * Time.deltaTime;
+        relativeLightPosition.y = 0;
+        pos += relativeLightPosition * _attractionForce * Time.deltaTime;
 
         //> Write new position to pos
-        pos = this.transform.position;
+        //pos = this.transform.position;
     }
 
     //> This function is called by the PlayerCharacter on start
@@ -54,7 +55,7 @@ public class DirectionIndicator : MonoBehaviour
     {
         pos = anchor.pos;
         this.transform.position = pos;
-        Debug.Log($"\"{name}\" is reset to {anchor.pos}.", this);
+        //Debug.Log($"\"{name}\" is reset to {anchor.pos}.", this);
     }
 
     private void ClampToAnchor(Vector3 anchorPos)

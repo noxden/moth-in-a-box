@@ -2,7 +2,7 @@
 // University:   Darmstadt University of Applied Sciences, Expanded Realities
 // Course:       Introduction to Electronics and Physical Interfaces by Prof. Dr. Frank Gabler
 // Script by:    Daniel Heilmann (771144)
-// Last changed: 26-02-22
+// Last changed: 27-02-22
 //----------------------------------------------------------------------------------------------
 
 using System.Collections;
@@ -13,7 +13,7 @@ public class UiUtil : MonoBehaviour
 {
     static public UiUtil Instance { set; get; }
 
-    private void Awake()    //Awake() is run even before Start()
+    private void Awake()
     {
         if (Instance == null)   //< With this if-structure it is IMPOSSIBLE to create more than one instance
         {
@@ -21,29 +21,74 @@ public class UiUtil : MonoBehaviour
         }
         else
         {
-            Destroy(this.gameObject);   //< If you somehow still get to create a new singleton gameobject regardless, destroy the new one
+            Destroy(this.gameObject);
         }
     }
 
-    #region FadeOut
-    public void FadeOut(CanvasGroup _canvasGroup, float _lerpDuration)
+    #region Fade
+    public void Fade(CanvasGroup _canvasGroup, float _lerpDuration, bool _doFadeIn)
     {
         if (_canvasGroup == null)
             return;
-        StartCoroutine(crFadeOut(_canvasGroup, _lerpDuration));
+        StartCoroutine(crFade(_canvasGroup, _lerpDuration, _doFadeIn));
     }
-    private IEnumerator crFadeOut(CanvasGroup _canvasGroup, float _lerpDuration)
+    private IEnumerator crFade(CanvasGroup _canvasGroup, float _lerpDuration, bool _doFadeIn = false)
     {
+        float startValue;
+        float endValue;
+
+        switch (_doFadeIn)
+        {
+            case true:
+                startValue = 0;
+                endValue = 1;
+                break;
+            case false:
+                startValue = 1;
+                endValue = 0;
+                break;
+        }
+
+        if (_doFadeIn == false)  //< If fade out, then run this code here.
+        {
+            _canvasGroup.interactable = _doFadeIn;
+            
+        }
+        else                     //< If fade in, then run this code here.
+        {
+            _canvasGroup.blocksRaycasts = _doFadeIn;
+        }
+            
+
         float timeElapsed = 0;
 
-        while (timeElapsed < _lerpDuration)
+        while (timeElapsed <= _lerpDuration)
         {
-            _canvasGroup.alpha = Mathf.Lerp(1, 0, timeElapsed / _lerpDuration);
+            _canvasGroup.alpha = Mathf.Lerp(startValue, endValue, timeElapsed / _lerpDuration);
             timeElapsed += Time.deltaTime;
 
             yield return null;
         }
-        _canvasGroup.alpha = 0;
+
+        switch (_doFadeIn)
+        {
+            case true:
+                _canvasGroup.alpha = 1;
+                break;
+            case false:
+                _canvasGroup.alpha = 0;
+                break;
+        }
+
+        if (_doFadeIn == true)  //< If fade in, then run this code here.
+        {
+            _canvasGroup.interactable = _doFadeIn;
+
+        }
+        else                     //< If fade out, then run this code here.
+        {
+            _canvasGroup.blocksRaycasts = _doFadeIn;
+        }
     }
     #endregion
 
@@ -63,4 +108,16 @@ public class UiUtil : MonoBehaviour
     */
     #endregion
 
+    #region Toggle
+    public void Toggle(CanvasGroup _canvasGroup, bool _toggleOn)
+    {
+        if (_toggleOn)
+            _canvasGroup.alpha = 1;
+        else
+            _canvasGroup.alpha = 0;
+
+        _canvasGroup.interactable = _toggleOn;
+        _canvasGroup.blocksRaycasts = _toggleOn;
+    }
+#endregion
 }

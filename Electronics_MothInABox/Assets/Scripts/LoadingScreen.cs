@@ -15,11 +15,11 @@ public class LoadingScreen : MonoBehaviour
 {
     private CanvasGroup canvasGroup;
 
+    public Text connectingText;
+
     private void Start()
     {
         canvasGroup = GetComponentInChildren<CanvasGroup>();
-
-        canvasGroup.alpha = 1;
 
         StartCoroutine(CheckForBoardConnected());
     }
@@ -27,31 +27,24 @@ public class LoadingScreen : MonoBehaviour
     IEnumerator CheckForBoardConnected()
     {
         GameManager gameManager = GameManager.Instance;
+
+        int timePassed = 0;
         while (!gameManager.isBoardConnected)
         {
+            if (timePassed == 29)   //< Text changes once after 30 seconds
+            {
+                connectingText.text = "<color=#FF7F7F>Failed to establish connection. Please restart the application.</color>";
+                timePassed += 1;
+            }
+            else if (timePassed < 29)
+            {
+                timePassed += 1;
+            }
             yield return new WaitForSeconds(1);
         }
 
         //Debug.Log(Time.realtimeSinceStartup);
         if (Time.realtimeSinceStartup >= 5.0f)      //< Let the Title Screen linger for a moment, even if the board has already been discovered.
-            UiUtil.Instance.FadeOut(canvasGroup, 1f);
+            UiUtil.Instance.Fade(canvasGroup, 1f, false);
     }
-
-    IEnumerator FadeOutCanvas()
-    {
-        float timeElapsed = 0;
-        float lerpDuration = 1;
-
-        while (timeElapsed < lerpDuration)
-        {
-            canvasGroup.alpha = Mathf.Lerp(1, 0, timeElapsed / lerpDuration);
-            timeElapsed += Time.deltaTime;
-
-            Debug.Log($"MOOOOIN", this);
-
-            yield return null;
-        }
-        canvasGroup.alpha = 0;
-    }
-
 }

@@ -46,13 +46,6 @@ public class LightSource : MonoBehaviour
             lightCollider.radius = strength;
     }
 
-    private void PullDirectionIndicator(DirectionIndicator _directionIndicator, Vector3 _dirToPlayer)
-    {
-        Rigidbody DIrigidbody = _directionIndicator.gameObject.GetComponent<Rigidbody>();
-        Debug.Log($"{DIrigidbody.name} will be shoved in {_dirToPlayer * attractionForce * Time.deltaTime}", this);
-        //DIrigidbody.AddForce(_dirToPlayer * attractionForce);
-    }
-
     protected void OnTriggerEnter(Collider other)
     {
         if (player == null)
@@ -68,9 +61,10 @@ public class LightSource : MonoBehaviour
         float  distToPlayer = Vector3.Distance(Vector3.zero, dirToPlayer);          //< Calculates the distance solely based on dirToPlayer
         //Debug.Log($"dist from {other.gameObject.name} to {this.name}: {distToPlayer}.", this);
         CalculateAttractionForce(distToPlayer);
-
+        /*
         if (attractionForce == 0 || dirToPlayer == Vector3.zero)   //< Guard clause. There is no need to run the MoveTo function if the vector will be (0,0,0) anyways.
             return;
+        */
         DirectionIndicator directionIndicator = player.indicator;    //< This is very not nice.
         directionIndicator.MoveTo(transform.position, attractionForce);  //< Passes its own position and the calculated attractionForce to the directionIndicator
     }

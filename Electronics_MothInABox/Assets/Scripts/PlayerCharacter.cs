@@ -9,18 +9,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerCharacter : EntityClass
+public class PlayerCharacter : MonoBehaviour
 {
     [Tooltip("The GameObject that will indicate which direction this GameObject will move in.")]
     public DirectionIndicator indicator;
     public Vector3 pos;
 
+    private Rigidbody rb;
     private Vector3 indicatorPos;   //< To make this Vector accessible for the Update function
 
     private const float MOVE_INTERVAL = 1;
 
     private void Start()
     {
+        rb = GetComponent<Rigidbody>();
         pos = this.transform.position;
 
         if (indicator == null)
@@ -97,14 +99,17 @@ public class PlayerCharacter : EntityClass
     */
     #endregion
 
-    private void Update()
+    private void FixedUpdate()
     {
-        this.transform.position = Vector3.MoveTowards(transform.position, new Vector3(Mathf.Round(pos.x), pos.y, Mathf.Round(pos.z)), Time.deltaTime * 3);
+        //> This is the solution to all my movement issues ;-;
+        //  I love my life.
+        this.transform.position = Vector3.MoveTowards(transform.position, new Vector3(Mathf.Round(pos.x), pos.y, Mathf.Round(pos.z)), Time.fixedDeltaTime * 3);
     }
 
     private IEnumerator MoveEvery(float seconds)
     {
         yield return new WaitForSeconds(seconds);
+        Debug.Log($"Executing MoveTowardsIndicator() now.", this);
         MoveTowardsIndicator();
 
         StartCoroutine(MoveEvery(seconds));
@@ -127,7 +132,7 @@ public class PlayerCharacter : EntityClass
         //pos.x = Mathf.Round(dirPos.x);
         //pos.z = Mathf.Round(dirPos.z);
         #endregion
-
+        
         //> The following switch statement restricts movement to only one axis per iteration
         switch (indicatorDirMagnitude.x > indicatorDirMagnitude.z)
         {
@@ -142,7 +147,31 @@ public class PlayerCharacter : EntityClass
         }
 
         //> Apply all changes on pos to the actual transform of this GameObject 
-        //this.transform.position = pos;    // THIS IS DEPRECATED: Replaced by the "Vector.MoveTowards" in Update
+        //this.transform.position = pos;    // THIS IS DEPRECATED: Replaced by the "Vector.MoveTowards" in Update        
+
+        #region My Attempt to use .AddForce to move the player
+        /*
+        switch (indicatorDirMagnitude.x > indicatorDirMagnitude.z)
+        {
+            
+            case true:
+                Debug.Log($"{true}, {indicatorDir}");
+                if (indicatorDir.x > 0)
+                    rb.AddForce(Vector3.right * 100);
+                else if (indicatorDir.x < 0)
+                    rb.AddForce(Vector3.left * 100);
+                break;
+            case false:
+                Debug.Log($"{false}, {indicatorDir}");
+                if (indicatorDir.z > 0)
+                    Debug.Log($"Shoot forward!");
+                    //rb.AddForce(Vector3.forward * 100);
+                else if (indicatorDir.z < 0)
+                    rb.AddForce(Vector3.back * 100);
+                break;
+        }
+        */
+        #endregion
 
         indicator.ResetToAnchor();
     }

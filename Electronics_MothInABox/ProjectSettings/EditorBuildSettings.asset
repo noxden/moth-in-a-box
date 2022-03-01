@@ -10,11 +10,14 @@ EditorBuildSettings:
     guid: 60b5a1ab97afb03479ad95a20c3408dd
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
-    guid: 2ca4f05a1cf831d48913970a59ada99e
+    guid: 327e76d53656523489e238357f578306
   - enabled: 1
     path: Assets/Scenes/Tutorial.unity
-    guid: 954eb86c51e42bc468cac273f2877ef9
-  - enabled: 1
+    guid: 1fc6e2771f6048f4dbc5360eb2f293c1
+  - enabled: 0
+    path: Assets/Scenes/Screenshots.unity
+    guid: 2ca4f05a1cf831d48913970a59ada99e
+  - enabled: 0
     path: Assets/Scenes/SandboxScene.unity
     guid: 0a9161f958a5ba444bfec66c1fa7cc93
   m_configObjects: {}
